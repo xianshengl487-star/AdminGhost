@@ -1,4 +1,4 @@
-﻿{
+{
   "gui.adminghost.title": "AdminGhost 管理面板",
   "gui.adminghost.hack_title": "AdminGhost HACK面板",
   "gui.adminghost.master_switch": "主开关",
@@ -38,5 +38,19 @@
   "gui.adminghost.rate_limit": "操作过快，请等待 %d 秒",
   "gui.adminghost.confirm_title": "确认操作",
   "gui.adminghost.confirm_yes": "是",
-  "gui.adminghost.confirm_no": "否"
+  "gui.adminghost.confirm_no": "否",
+  "gui.adminghost.v2.title": "AdminGhost v2.0 ??????",
+  "gui.adminghost.context.label": "???",
+  "gui.adminghost.category.dupe": "?????",
+  "gui.adminghost.category.presets": "????",
+  "gui.adminghost.category.research": "????",
+  "gui.adminghost.preset.reload": "????",
+  "gui.adminghost.curios_destroy": "Curios????",
+  "gui.adminghost.enigmatic_bag": "Enigmatic????",
+  "gui.adminghost.goety_void": "Goety VoidSlash",
+  "gui.adminghost.cataclysm_altar": "Cataclysm????",
+  "gui.adminghost.apotheosis_enchant": "Apotheosis????",
+  "gui.adminghost.export_report": "??????",
+  "gui.adminghost.packet_logger": "PacketLogger?/?",
+  "gui.adminghost.context_detect": "?????"
 }

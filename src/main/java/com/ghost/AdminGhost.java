@@ -6,6 +6,8 @@ import com.ghost.gui.HackPanel;
 import com.ghost.gui.HackHUD;
 import com.ghost.hack.ModuleManager;
 import com.ghost.scanner.PacketScanner;
+import com.ghost.util.PresetManager;
+import com.ghost.util.ContextDetector;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,6 +32,7 @@ public class AdminGhost {
         MinecraftForge.EVENT_BUS.addListener(this::onHudRender);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onKeyRegister);
         ModuleManager.init();
+        PresetManager.load();
         LOGGER.info("[Ghost] AdminGhost loaded. RSHIFT=Exploit F7=Hack F6=HUD INSERT=MasterSwitch");
     }
 

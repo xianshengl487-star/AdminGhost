@@ -1,4 +1,4 @@
-﻿{
+{
   "gui.adminghost.title": "AdminGhost Panel",
   "gui.adminghost.hack_title": "AdminGhost HACK Panel",
   "gui.adminghost.master_switch": "Master Switch",
@@ -29,5 +29,19 @@
   "gui.adminghost.rate_limit": "Too fast, wait %d seconds",
   "gui.adminghost.confirm_title": "Confirm",
   "gui.adminghost.confirm_yes": "Yes",
-  "gui.adminghost.confirm_no": "No"
+  "gui.adminghost.confirm_no": "No",
+  "gui.adminghost.v2.title": "AdminGhost v2.0 Audit Platform",
+  "gui.adminghost.context.label": "Context",
+  "gui.adminghost.category.dupe": "Dupe Exploits",
+  "gui.adminghost.category.presets": "Presets",
+  "gui.adminghost.category.research": "Research Tools",
+  "gui.adminghost.preset.reload": "Reload Presets",
+  "gui.adminghost.curios_destroy": "Curios Destroy All",
+  "gui.adminghost.enigmatic_bag": "Enigmatic Bag Dupe",
+  "gui.adminghost.goety_void": "Goety VoidSlash",
+  "gui.adminghost.cataclysm_altar": "Cataclysm Altar Inject",
+  "gui.adminghost.apotheosis_enchant": "Apotheosis Force Enchant",
+  "gui.adminghost.export_report": "Export Audit Report",
+  "gui.adminghost.packet_logger": "Toggle PacketLogger",
+  "gui.adminghost.context_detect": "Detect Context"
 }
