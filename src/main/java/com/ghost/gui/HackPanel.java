@@ -40,7 +40,7 @@ public class HackPanel extends Screen {
     public HackPanel() { super(Component.literal("AdminGhost-Hacks")); }
 
     @Override protected void init() {
-        if (!inited) { buildEntries(); loadKeybinds(); inited = true; }
+        if (!inited) { loadKeybinds(); buildEntries(); inited = true; }
         panelX = (this.width - PANEL_W) / 2;
         panelY = 8;
         panelH = this.height - 16;
@@ -281,7 +281,7 @@ public class HackPanel extends Screen {
                 Map<String, Integer> loaded = new Gson().fromJson(json, new TypeToken<Map<String, Integer>>(){}.getType());
                 if (loaded != null) moduleKeybinds.putAll(loaded);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) { com.ghost.AdminGhost.LOGGER.warn("[HackPanel] Keybind error: " + e.getMessage()); }
     }
 
     private static void saveKeybinds() {
@@ -289,6 +289,6 @@ public class HackPanel extends Screen {
             Path dir = Path.of("config");
             if (!Files.exists(dir)) Files.createDirectories(dir);
             Files.writeString(Path.of("config/adminghost_hack_keybinds.json"), new Gson().toJson(moduleKeybinds));
-        } catch (Exception ignored) {}
+        } catch (Exception e) { com.ghost.AdminGhost.LOGGER.warn("[HackPanel] Keybind error: " + e.getMessage()); }
     }
 }

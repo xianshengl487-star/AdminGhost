@@ -110,18 +110,14 @@ public class AdminGhost {
                 ModuleManager.processKey(key);
             }
         });
-        LOGGER.info("[Ghost] GLFW callback installed - Right Shift / F7 / F6");
+        LOGGER.info("[Ghost] GLFW callback installed - Right Shift / F7 / F6 (Forge onKey disabled)");
     }
 
     private void onHudRender(RenderGuiOverlayEvent.Post event) {
         HackHUD.render(event.getGuiGraphics());
     }
 
-    private void onKey(InputEvent.Key event) {
-        if (event.getAction() != GLFW.GLFW_PRESS) return;
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.screen != null) return;
-        ExploitOverlay.processGlobalKey(event.getKey());
-        ModuleManager.processKey(event.getKey());
-    }
+    // Forge key handler is intentionally a no-op.
+    // All key processing is done in the GLFW callback (installGlfwCallback) to avoid double-fire.
+    private void onKey(InputEvent.Key event) { }
 }
