@@ -9,6 +9,7 @@ import com.ghost.scanner.PacketScanner;
 import com.ghost.util.PresetManager;
 import com.ghost.util.ContextDetector;
 import com.ghost.util.KeyBindings;
+import com.ghost.util.MasterSwitch;
 import com.ghost.exploit.OneKeyExploit;
 import com.ghost.exploit.ExploitSender;
 import net.minecraft.client.Minecraft;
@@ -28,6 +29,7 @@ import com.mojang.logging.LogUtils;
 public class AdminGhost {
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final PacketScanner SCANNER = new PacketScanner();
+    private static long lastToggleTime = 0;
 
     public AdminGhost() {
         MinecraftForge.EVENT_BUS.addListener(this::onCommands);
@@ -56,7 +58,7 @@ public class AdminGhost {
         // Quick exploit keys - work even when GUI is open
         if (KeyBindings.QUICK_ENCHANT.consumeClick()) {
             String result = ExploitSender.infuserEnchant("minecraft:sharpness", true);
-            mc.player.displayClientMessage(Component.literal("\\u00a7b[AdminGhost] " + result), false);
+            mc.player.displayClientMessage(Component.literal("\u00a7b[AdminGhost] " + result), false);
         }
 
         if (KeyBindings.ONE_KEY_FILL.consumeClick()) {
@@ -64,11 +66,7 @@ public class AdminGhost {
         }
 
         if (KeyBindings.MASTER_SWITCH.consumeClick()) {
-            boolean newState = !ExploitOverlay.isMasterEnabled();
-            ExploitOverlay.setMasterEnabled(newState);
-            mc.player.displayClientMessage(Component.literal(
-                newState ? "\\u00a7a[ON] Master Switch" : "\\u00a7c[OFF] Master Switch (INSERT to re-enable)"
-            ), false);
+            MasterSwitch.toggle();
         }
 
         ModuleManager.onTickAll();
@@ -107,6 +105,9 @@ public class AdminGhost {
     /** Smart switching: close current screen first, then open on next tick */
     public static void toggleExploitGui() {
         Minecraft mc = Minecraft.getInstance();
+        long now = System.currentTimeMillis();
+        if (now - lastToggleTime < 200) return; // 200ms cooldown
+        lastToggleTime = now;
         if (mc.screen instanceof ExploitOverlay) {
             mc.setScreen(null);
         } else {
@@ -117,6 +118,9 @@ public class AdminGhost {
 
     public static void toggleHackGui() {
         Minecraft mc = Minecraft.getInstance();
+        long now = System.currentTimeMillis();
+        if (now - lastToggleTime < 200) return; // 200ms cooldown
+        lastToggleTime = now;
         if (mc.screen instanceof HackPanel) {
             mc.setScreen(null);
         } else {
