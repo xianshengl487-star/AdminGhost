@@ -29,13 +29,13 @@ public class GhostCommand {
                 case "0","survival" -> GameType.SURVIVAL; case "1","creative" -> GameType.CREATIVE;
                 case "2","adventure" -> GameType.ADVENTURE; case "3","spectator" -> GameType.SPECTATOR;
                 default -> null; };
-                if (gt != null && mc.gameMode != null) { mc.gameMode.setLocalMode(gt); return msg(ctx,"[OK] Gamemode: "+m); }
+                if (gt != null && mc.gameMode != null) { mc.gameMode.setLocalMode(gt); return msg(ctx,"[CLIENT ONLY] Gamemode: "+m); }
                 return msg(ctx,"[X] Invalid mode"); })));
 
         root.then(lit("fly")
-            .executes(ctx -> { if(mc.player!=null){mc.player.getAbilities().mayfly=true;mc.player.getAbilities().flying=true;mc.player.onUpdateAbilities();} return msg(ctx,"[OK] Fly ON"); })
+            .executes(ctx -> { if(mc.player!=null){mc.player.getAbilities().mayfly=true;mc.player.getAbilities().flying=true;mc.player.onUpdateAbilities();} return msg(ctx,"[CLIENT ONLY] Fly ON"); })
             .then(arg("speed", DoubleArgumentType.doubleArg(0.1,100))
-                .executes(ctx -> { float s=(float)dgr(ctx,"speed"); if(mc.player!=null){mc.player.getAbilities().setFlyingSpeed(s/20f);mc.player.onUpdateAbilities();} return msg(ctx,"[OK] Fly speed: "+s); })));
+                .executes(ctx -> { float s=(float)dgr(ctx,"speed"); if(mc.player!=null){mc.player.getAbilities().setFlyingSpeed(s/20f);mc.player.onUpdateAbilities();} return msg(ctx,"[CLIENT ONLY] Fly speed: "+s); })));
 
         root.then(lit("effect").then(arg("effect", StringArgumentType.string())
             .executes(ctx -> { String e=str(ctx,"effect"); return applyEffect(ctx,e,9999,0); })
@@ -44,14 +44,14 @@ public class GhostCommand {
                 .then(arg("amp", IntegerArgumentType.integer(0,255))
                     .executes(ctx -> applyEffect(ctx,str(ctx,"effect"),igr(ctx,"dur"),igr(ctx,"amp")))))));
 
-        root.then(lit("buff").executes(ctx -> { if(mc.player!=null){addBuffs(0);} return msg(ctx,"[OK] All buffs"); })
+        root.then(lit("buff").executes(ctx -> { if(mc.player!=null){addBuffs(0);} return msg(ctx,"[CLIENT ONLY] All buffs"); })
             .then(arg("amp", IntegerArgumentType.integer(0,255))
-                .executes(ctx -> { addBuffs(igr(ctx,"amp")); return msg(ctx,"[OK] All buffs amp="+igr(ctx,"amp")); })));
+                .executes(ctx -> { addBuffs(igr(ctx,"amp")); return msg(ctx,"[CLIENT ONLY] All buffs amp="+igr(ctx,"amp")); })));
 
-        root.then(lit("clearbuff").executes(ctx -> { if(mc.player!=null) mc.player.removeAllEffects(); return msg(ctx,"[OK] Cleared effects"); }));
+        root.then(lit("clearbuff").executes(ctx -> { if(mc.player!=null) mc.player.removeAllEffects(); return msg(ctx,"[CLIENT ONLY] Cleared effects"); }));
 
         root.then(lit("xp").then(arg("amount", StringArgumentType.string())
-            .executes(ctx -> { try{int a=Integer.parseInt(str(ctx,"amount")); if(mc.player!=null)mc.player.giveExperiencePoints(a); return msg(ctx,"[OK] +"+a+" XP");}catch(Exception e){return msg(ctx,"[X] Invalid");} })));
+            .executes(ctx -> { try{int a=Integer.parseInt(str(ctx,"amount")); if(mc.player!=null)mc.player.giveExperiencePoints(a); return msg(ctx,"[CLIENT ONLY] +"+a+" XP");}catch(Exception e){return msg(ctx,"[X] Invalid");} })));
 
         root.then(lit("weather").then(arg("type", StringArgumentType.string())
             .executes(ctx -> msg(ctx,"[OK] Weather: "+str(ctx,"type")))));
@@ -64,7 +64,7 @@ public class GhostCommand {
             .then(arg("count", IntegerArgumentType.integer(1,100))
                 .executes(ctx -> msg(ctx,"[OK] Summon x"+igr(ctx,"count"))))));
 
-        root.then(lit("clear").executes(ctx -> { if(mc.player!=null)mc.player.getInventory().clearContent(); return msg(ctx,"[OK] Inventory cleared"); }));
+        root.then(lit("clear").executes(ctx -> { if(mc.player!=null)mc.player.getInventory().clearContent(); return msg(ctx,"[CLIENT ONLY] Inventory cleared"); }));
 
         root.then(lit("whoami").executes(ctx -> {
             if(mc.player!=null) { msg(ctx,"Name: "+mc.player.getName().getString()); msg(ctx,"Pos: "+mc.player.blockPosition().toShortString()); msg(ctx,"Health: "+mc.player.getHealth()+"/"+mc.player.getMaxHealth()); }
@@ -78,7 +78,7 @@ public class GhostCommand {
             return msg(ctx, sb.length()>0 ? sb.toString() : "No entities nearby"); }));
 
         root.then(lit("help").executes(ctx -> {
-            String[] h = {"===== AdminGhost v10 =====","RIGHT SHIFT = Panel","/g gm|fly|effect|buff|clearbuff","/g xp|weather|time|summon|clear","/g whoami|nearby|help","========================"};
+            String[] h = {"===== AdminGhost v2.0 =====","RIGHT SHIFT = Exploit Panel | F7 = Hack Panel","INSERT = Master Switch | K = Quick Enchant","/g gm|fly|effect|buff|clearbuff \u00a77[CLIENT]","/g xp|weather|time|summon|clear","/g whoami|nearby|help","========================"};
             for(String l : h) msg(ctx,l); return 1; }));
 
         d.register(root);
@@ -102,7 +102,7 @@ public class GhostCommand {
             default -> { return msg(ctx,"[X] Unknown: "+name); }
         }
         mc.player.addEffect(eff);
-        return msg(ctx,"[OK] "+name+" x"+(amp+1)+" for "+dur+"s");
+        return msg(ctx,"[CLIENT ONLY] "+name+" x"+(amp+1)+" for "+dur+"s");
     }
 
     private static void addBuffs(int amp) {

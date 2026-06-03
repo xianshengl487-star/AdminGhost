@@ -1,8 +1,10 @@
 package com.ghost.gui;
 
 import com.ghost.exploit.ExploitSender;
+import com.ghost.util.MasterSwitch;
 import com.ghost.util.GameRegistry;
 import com.ghost.util.GameRegistry.ItemEntry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -20,6 +22,8 @@ public class ItemSpawnSelector extends Screen {
     private Map<String, Boolean> collapsed = new HashMap<>();
     private int spawnCount = 64;
     private int scrollOffset = 0;
+    private long lastActionTime = 0;
+    private static final long RATE_LIMIT_MS = 500;
     private EditBox searchBox;
     private EditBox countBox;
     private EditBox customIdBox;
@@ -179,6 +183,18 @@ public class ItemSpawnSelector extends Screen {
 
     // ==================== MOUSE ====================
 
+
+    /** Execute a spawn action with MasterSwitch + rate limit checks */
+    private String gatedSpawn(java.util.function.Supplier<String> action) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.getConnection() == null) return "[X] Not in game";
+        if (!MasterSwitch.isEnabled()) return "[X] Master Switch OFF (INSERT)";
+        long now = System.currentTimeMillis();
+        if (now - lastActionTime < RATE_LIMIT_MS) return "[!] Too fast, wait...";
+        lastActionTime = now;
+        return action.get();
+    }
+
     @Override public boolean mouseClicked(double mx, double my, int btn) {
         // Quick buttons
         int quickY = panelY + 66;
@@ -194,7 +210,7 @@ public class ItemSpawnSelector extends Screen {
                 int bx = panelX + 100 + i * 82;
                 if (mx >= bx && mx < bx + 78) {
                     int count = getCount();
-                    String result = ExploitSender.serverGiveItem(quickItems[i][1], count);
+                    String finalId = quickItems[i][1]; String result = gatedSpawn(() -> ExploitSender.serverGiveItem(finalId, count));
                     statusMsg = result + " | " + quickItems[i][0] + " x" + count;
                     statusTimer = 100;
                     return true;
@@ -208,7 +224,7 @@ public class ItemSpawnSelector extends Screen {
             int bx = panelX + 390;
             if (mx >= bx && mx < bx + 120 && my >= panelY + 44 && my < panelY + 62) {
                 int count = getCount();
-                String result = ExploitSender.serverGiveItem(customId, count);
+                String finalCustom = customId; String result = gatedSpawn(() -> ExploitSender.serverGiveItem(finalCustom, count));
                 statusMsg = result + " | " + customId + " x" + count;
                 statusTimer = 100;
                 return true;
@@ -232,7 +248,7 @@ public class ItemSpawnSelector extends Screen {
                         return true;
                     } else if (obj instanceof ItemEntry e) {
                         int count = getCount();
-                        String result = ExploitSender.serverGiveItem(e.registryName, count);
+                        String finalReg = e.registryName; String result = gatedSpawn(() -> ExploitSender.serverGiveItem(finalReg, count));
                         statusMsg = result + " | " + e.displayName + " x" + count;
                         statusTimer = 100;
                         return true;
