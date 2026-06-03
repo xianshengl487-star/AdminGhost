@@ -8,7 +8,11 @@ import com.ghost.hack.ModuleManager;
 import com.ghost.scanner.PacketScanner;
 import com.ghost.util.PresetManager;
 import com.ghost.util.ContextDetector;
+import com.ghost.util.KeyBindings;
+import com.ghost.exploit.OneKeyExploit;
+import com.ghost.exploit.ExploitSender;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -33,17 +37,40 @@ public class AdminGhost {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onKeyRegister);
         ModuleManager.init();
         PresetManager.load();
-        LOGGER.info("[Ghost] AdminGhost loaded. RSHIFT=Exploit F7=Hack F6=HUD INSERT=MasterSwitch");
+        LOGGER.info("[Ghost] AdminGhost v2.0 loaded. RSHIFT=Exploit F7=Hack F6=HUD INSERT=Master K=Enchant G=OneKey");
     }
 
     private void onCommands(RegisterCommandsEvent e) {
         GhostCommand.register(e.getDispatcher());
     }
 
-    private void onKeyRegister(net.minecraftforge.client.event.RegisterKeyMappingsEvent e) { }
+    private void onKeyRegister(net.minecraftforge.client.event.RegisterKeyMappingsEvent e) {
+        KeyBindings.register(e);
+    }
 
     private void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.level == null) return;
+
+        // Quick exploit keys - work even when GUI is open
+        if (KeyBindings.QUICK_ENCHANT.consumeClick()) {
+            String result = ExploitSender.infuserEnchant("minecraft:sharpness", true);
+            mc.player.displayClientMessage(Component.literal("\\u00a7b[AdminGhost] " + result), false);
+        }
+
+        if (KeyBindings.ONE_KEY_FILL.consumeClick()) {
+            OneKeyExploit.performOneKeyFill();
+        }
+
+        if (KeyBindings.MASTER_SWITCH.consumeClick()) {
+            boolean newState = !ExploitOverlay.isMasterEnabled();
+            ExploitOverlay.setMasterEnabled(newState);
+            mc.player.displayClientMessage(Component.literal(
+                newState ? "\\u00a7a[ON] Master Switch" : "\\u00a7c[OFF] Master Switch (INSERT to re-enable)"
+            ), false);
+        }
+
         ModuleManager.onTickAll();
     }
 
@@ -51,37 +78,50 @@ public class AdminGhost {
         HackHUD.render(event.getGuiGraphics());
     }
 
+    // ===== Smart GUI switching - prevents screen conflicts =====
     private void onKey(InputEvent.Key event) {
         if (event.getAction() != GLFW.GLFW_PRESS) return;
         Minecraft mc = Minecraft.getInstance();
         int key = event.getKey();
 
-        // GUI toggles - work even when other screens are open
-        if (key == GLFW.GLFW_KEY_RIGHT_SHIFT) {
-            if (mc.screen instanceof ExploitOverlay || mc.screen instanceof HackPanel) {
-                mc.setScreen(null);
-            } else {
-                mc.setScreen(new ExploitOverlay());
-            }
+        if (KeyBindings.EXPLOIT_PANEL.matches(key, event.getScanCode())) {
+            toggleExploitGui();
             return;
         }
-        if (key == GLFW.GLFW_KEY_F7) {
-            if (mc.screen instanceof HackPanel || mc.screen instanceof ExploitOverlay) {
-                mc.setScreen(null);
-            } else {
-                mc.setScreen(new HackPanel());
-            }
+        if (KeyBindings.HACK_PANEL.matches(key, event.getScanCode())) {
+            toggleHackGui();
             return;
         }
-        if (key == GLFW.GLFW_KEY_F6) {
+        if (KeyBindings.HUD_TOGGLE.matches(key, event.getScanCode())) {
             HackHUD.toggle();
             return;
         }
 
-        // Module/exploit keybinds - only when no screen is open
+        // Module keybinds only when no screen is open
         if (mc.screen == null) {
             ExploitOverlay.processGlobalKey(key);
             ModuleManager.processKey(key);
+        }
+    }
+
+    /** Smart switching: close current screen first, then open on next tick */
+    public static void toggleExploitGui() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.screen instanceof ExploitOverlay) {
+            mc.setScreen(null);
+        } else {
+            mc.setScreen(null);
+            mc.execute(() -> mc.setScreen(new ExploitOverlay()));
+        }
+    }
+
+    public static void toggleHackGui() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.screen instanceof HackPanel) {
+            mc.setScreen(null);
+        } else {
+            mc.setScreen(null);
+            mc.execute(() -> mc.setScreen(new HackPanel()));
         }
     }
 }

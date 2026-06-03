@@ -43,5 +43,15 @@
   "gui.adminghost.apotheosis_enchant": "Apotheosis Force Enchant",
   "gui.adminghost.export_report": "Export Audit Report",
   "gui.adminghost.packet_logger": "Toggle PacketLogger",
-  "gui.adminghost.context_detect": "Detect Context"
+  "gui.adminghost.context_detect": "Detect Context",
+  "key.adminghost.exploit_panel": "Exploit Panel",
+  "key.adminghost.hack_panel": "Hack Panel",
+  "key.adminghost.hud_toggle": "Toggle HUD",
+  "key.adminghost.master_switch": "Master Switch",
+  "key.adminghost.quick_enchant": "Quick Enchant",
+  "key.adminghost.one_key_fill": "One-Key Fill",
+  "key.categories.adminghost": "AdminGhost",
+  "gui.adminghost.feedback.executing": "Executing...",
+  "gui.adminghost.feedback.success": "Success",
+  "gui.adminghost.feedback.failed": "Failed"
 }

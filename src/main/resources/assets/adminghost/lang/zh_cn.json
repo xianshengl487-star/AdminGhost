@@ -52,5 +52,15 @@
   "gui.adminghost.apotheosis_enchant": "Apotheosis????",
   "gui.adminghost.export_report": "??????",
   "gui.adminghost.packet_logger": "PacketLogger?/?",
-  "gui.adminghost.context_detect": "?????"
+  "gui.adminghost.context_detect": "?????",
+  "key.adminghost.exploit_panel": "????",
+  "key.adminghost.hack_panel": "HACK??",
+  "key.adminghost.hud_toggle": "HUD??",
+  "key.adminghost.master_switch": "???",
+  "key.adminghost.quick_enchant": "????",
+  "key.adminghost.one_key_fill": "????",
+  "key.categories.adminghost": "AdminGhost",
+  "gui.adminghost.feedback.executing": "???...",
+  "gui.adminghost.feedback.success": "??",
+  "gui.adminghost.feedback.failed": "??"
 }
