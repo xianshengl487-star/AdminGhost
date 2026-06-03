@@ -1,5 +1,6 @@
 package com.ghost.gui;
 
+import com.ghost.AdminGhost;
 import com.ghost.hack.HackModule;
 import com.ghost.hack.ModuleManager;
 import com.google.gson.Gson;
@@ -40,6 +41,7 @@ public class HackPanel extends Screen {
     public HackPanel() { super(Component.literal("AdminGhost-Hacks")); }
 
     @Override protected void init() {
+        super.init();
         if (!inited) { loadKeybinds(); buildEntries(); inited = true; }
         panelX = (this.width - PANEL_W) / 2;
         panelY = 8;
@@ -57,6 +59,7 @@ public class HackPanel extends Screen {
     // ==================== RENDERING ====================
 
     @Override public void render(GuiGraphics gfx, int mx, int my, float pt) {
+        super.render(gfx, mx, my, pt);
         // Semi-transparent background
         gfx.fill(0, 0, this.width, this.height, 0xAA000000);
 
@@ -145,38 +148,41 @@ public class HackPanel extends Screen {
     // ==================== MOUSE ====================
 
     @Override public boolean mouseClicked(double mx, double my, int btn) {
-        if (btn == 0 || btn == 1) {
-            List<VisEntry> visible = buildVisibleList();
-            int contentY = panelY + 24;
-            int contentH = panelH - 30;
-            int maxVisible = contentH / ROW_H;
+        if (btn != 0 && btn != 1) return super.mouseClicked(mx, my, btn);
 
-            for (int i = scrollOffset; i < Math.min(visible.size(), scrollOffset + maxVisible); i++) {
-                VisEntry ve = visible.get(i);
-                int rowY = contentY + (i - scrollOffset) * ROW_H;
+        List<VisEntry> visible = buildVisibleList();
+        int contentY = panelY + 24;
+        int contentH = panelH - 30;
+        int maxVisible = contentH / ROW_H;
 
-                if (mx >= panelX + 4 && mx <= panelX + PANEL_W - 4 && my >= rowY && my < rowY + ROW_H) {
-                    if (ve.isCategory()) {
-                        ve.cat.collapsed = !ve.cat.collapsed;
-                        scrollOffset = 0;
-                        return true;
-                    }
+        for (int listIdx = 0; listIdx < visible.size(); listIdx++) {
+            int visualIdx = listIdx - scrollOffset;
+            if (visualIdx < 0 || visualIdx >= maxVisible) continue;
 
-                    HackModule m = ve.mod;
-                    if (btn == 0) {
-                        // Left click = toggle
-                        m.toggle();
-                        boolean on = m.isEnabled();
-                        statusMsg = on ? "[OK] " + m.getName() + " \u5f00\u542f" : "[OK] " + m.getName() + " \u5173\u95ed";
-                        statusTimer = 60;
-                    } else {
-                        // Right click = bind key
-                        bindingModule = m.getName();
-                        statusMsg = "\u00a7e\u6309\u4e00\u4e2a\u952e\u7ed1\u5b9a\u5230: " + m.getName();
-                        statusTimer = 200;
-                    }
+            VisEntry ve = visible.get(listIdx);
+            int rowH = ve.isCategory() ? CAT_H : ROW_H;
+            int rowY = contentY + visualIdx * ROW_H;
+
+            if (mx >= panelX + 4 && mx <= panelX + PANEL_W - 4
+                    && my >= rowY && my < rowY + rowH) {
+                if (ve.isCategory()) {
+                    ve.cat.collapsed = !ve.cat.collapsed;
+                    scrollOffset = 0;
                     return true;
                 }
+                HackModule m = ve.mod;
+                if (m == null) return true;
+                if (btn == 0) {
+                    m.toggle();
+                    boolean on = m.isEnabled();
+                    statusMsg = on ? "[OK] " + m.getName() + " ON" : "[OK] " + m.getName() + " OFF";
+                    statusTimer = 60;
+                } else {
+                    bindingModule = m.getName();
+                    statusMsg = "Press a key to bind: " + m.getName();
+                    statusTimer = 200;
+                }
+                return true;
             }
         }
         return super.mouseClicked(mx, my, btn);
