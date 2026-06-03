@@ -1,0 +1,27 @@
+﻿# Gradle
+.gradle/
+build/
+gradle/
+gradlew
+gradlew.bat
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Minecraft
+run/
+config/

@@ -1,0 +1,8 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "com.ghost.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "client": ["MixinConnection"],
+    "injectors": { "defaultRequire": 0 }
+}

@@ -1,0 +1,34 @@
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+}
+version = '1.0.0'
+group = 'com.ghost'
+archivesBaseName = 'AdminGhost'
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods { adminghost { source sourceSets.main } }
+        }
+    }
+}
+mixin {
+    add sourceSets.main, "adminghost.refmap.json"
+    config "adminghost.mixins.json"
+}
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.1-47.2.0'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+compileJava {
+    options.encoding = 'UTF-8'
+}
+
+jar { manifest { attributes(["MixinConfigs": "adminghost.mixins.json"]) } }
